@@ -1,0 +1,7 @@
+{
+	"name": "PieHikingPlugin",
+	"tree": {
+		"$path": "src"
+	},
+	"emitLegacyScripts": false
+}

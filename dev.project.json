@@ -1,0 +1,11 @@
+{
+	"name": "PieHikingPlugin",
+	"tree": {
+		"$path": "src",
+
+		"DevPackages": {
+			"$path": "DevPackages"
+		}
+	},
+	"emitLegacyScripts": false
+}
