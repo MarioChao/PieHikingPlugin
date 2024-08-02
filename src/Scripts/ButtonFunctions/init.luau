@@ -28,9 +28,10 @@ local function changeHistoryServiceWrap(warnMessage: string, finishOperation: En
 			return
 		end
 
-		local success = pcall(callback)
+		local success, result = pcall(callback)
 		if not success then
 			warn("Error in plugin function.")
+			warn(result)
 		end
 
 		ChangeHistoryService:FinishRecording(recording, finishOperation)

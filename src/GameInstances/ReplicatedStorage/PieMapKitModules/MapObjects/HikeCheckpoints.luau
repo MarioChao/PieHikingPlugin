@@ -1,0 +1,217 @@
+--!strict
+-- Template Object Module
+
+---------- Module ----------
+local Module = {}
+
+---------- Services ----------
+
+local Debris = game:GetService("Debris")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+---------- Types ----------
+
+---------- Instances ----------
+
+---------- Variables ----------
+
+local taggedConnections: {[BasePart]: {RBXScriptConnection}} = {}
+
+local playerCheckpoint: {[Player]: BasePart} = {}
+
+---------- Helper functions ----------
+
+-- Get the part's parent, checking if it is a character model with a `Humanoid`
+local function getAndValidateCharacterFromPart(part: BasePart): Model?
+	-- Validate part
+	if not part:IsA("BasePart") then
+		return nil
+	end
+
+	-- Validate character
+	local character = part.Parent
+	if not (character and character:IsA("Model")) then
+		return nil
+	end
+
+	-- Validate humanoid
+	local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	if not humanoid then
+		return nil
+	end
+
+	-- Return
+	return character
+end
+
+-- Get the `Player` object from a character model
+local function getPlayer(character: Model?): Player?
+	local player: Player?
+	player = character and Players:GetPlayerFromCharacter(character)
+	return player
+end
+
+local function isCharacterAlive(character: Model): boolean
+	-- Validate humanoid
+	local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	if not humanoid then
+		return false
+	end
+
+	-- Return positive health
+	return humanoid.Health > 0
+end
+
+---------- Local functions ----------
+-- Define general functions here
+
+local function playCheckpointEffect(part: BasePart)
+	local sparkle = Instance.new("Sparkles")
+	sparkle.Parent = part
+	Debris:AddItem(sparkle, 2)
+end
+
+local function onCheckpointTouched(checkpointPart: BasePart, otherPart: BasePart)
+	-- Validate player
+	local character = getAndValidateCharacterFromPart(otherPart)
+	local player = getPlayer(character)
+	if not (character and player) then
+		return
+	end
+
+	-- Validate alive
+	if not isCharacterAlive(character) then
+		return
+	end
+
+	-- Validate new checkpoint
+	if not (playerCheckpoint[player] ~= checkpointPart) then
+		return
+	end
+
+	-- Set checkpoint
+	playerCheckpoint[player] = checkpointPart
+
+	-- Checkpoint effect
+	playCheckpointEffect(checkpointPart)
+end
+
+local function setUpObject(part: BasePart)
+	-- Set up connections
+	local connections = {}
+	taggedConnections[part] = connections
+
+	-- Create connections
+	table.insert(connections, part.Touched:Connect(function(otherPart: BasePart)
+		onCheckpointTouched(part, otherPart)
+	end))
+end
+
+local function cleanUpObject(part: BasePart)
+	-- Disconnect and remove stored connections
+	if taggedConnections[part] then
+		for _, connection in taggedConnections[part] do
+			connection:Disconnect()
+		end
+		taggedConnections[part] = nil
+	end
+
+	-- Remove checkpoints containing part
+	for player, checkpoint in playerCheckpoint do
+		if part == checkpoint then
+			playerCheckpoint[player] = nil
+		end
+	end
+end
+
+local function validateObject(object: Instance)
+	return object:IsA("BasePart")
+end
+
+---------- Module functions ----------
+
+function Module.addInstance(object: Instance)
+	-- Validate object
+	if not validateObject(object) then
+		return
+	end
+
+	-- Validate unique
+	if taggedConnections[object] then
+		return
+	end
+
+	-- Set up object
+	setUpObject(object)
+end
+
+function Module.removeInstance(object: Instance)
+	-- Validate object
+	if not validateObject(object) then
+		return
+	end
+
+	-- Clean up object
+	cleanUpObject(object)
+end
+
+---------- Event functions ----------
+
+local function onCharacterAdded(character: Model, player: Player)
+	-- Validate existing checkpoint
+	local checkpointPart = playerCheckpoint[player]
+	if not checkpointPart then
+		return
+	end
+
+	-- Validate humanoid root part
+	local humanoidRootPart = character:WaitForChild("HumanoidRootPart") :: BasePart?
+	if not humanoidRootPart then
+		return
+	end
+
+	-- Delay a bit to allow default spawn position
+	task.wait(0.1)
+
+	-- Move player to checkpoint
+	humanoidRootPart:PivotTo(checkpointPart.CFrame)
+end
+
+local function onPlayerAdded(player: Player)
+	player.CharacterAdded:Connect(function(character: Model)
+		onCharacterAdded(character, player)
+	end)
+end
+
+local function onPlayerRemoving(player: Player)
+	playerCheckpoint[player] = nil
+end
+
+local function allPlayerEvents()
+	local players = Players:GetPlayers()
+	task.defer(function()
+		for _, player in players do
+			onPlayerAdded(player)
+		end
+	end)
+	Players.PlayerAdded:Connect(onPlayerAdded)
+	Players.PlayerRemoving:Connect(onPlayerRemoving)
+end
+
+---------- Set up function ----------
+local function initSetUp()
+	if RunService:IsClient() then
+		-- For local player
+		onPlayerAdded(Players.LocalPlayer)
+	elseif RunService:IsServer() then
+		-- For all players (not used)
+		-- allPlayerEvents()
+	end
+end
+
+---------- Calling / connecting functions ----------
+initSetUp()
+
+---------- Return module ----------
+return Module

@@ -76,6 +76,12 @@ local function setUpMapKitContainers(): {Instance}
 	return addedInstances
 end
 
+local function setUpMapKitProperties()
+	workspace.StreamingEnabled = false
+	print("Disabled StreamingEnabled")
+	warn("If you haven't, please enable TouchesUseCollisionGroups in Workspace!")
+end
+
 local function insertMapKit(): {Instance}
 	local newKit: typeof(PieHikingMapKit) = PieHikingMapKit:Clone()
 	newKit.Parent = workspace
@@ -93,6 +99,7 @@ end
 function Module.setUp()
 	local addedInstances = setUpMapKitContainers()
 	Selection:Set(addedInstances)
+	setUpMapKitProperties()
 end
 
 function Module.insert()

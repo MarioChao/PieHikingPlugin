@@ -1,0 +1,25 @@
+{
+	"ClassName": "Folder",
+	"Children": [
+		{
+			"Name": "LoadDreamRemote",
+			"ClassName": "RemoteEvent"
+		},
+		{
+			"Name": "LightingBindable",
+			"ClassName": "BindableEvent"
+		},
+		{
+			"Name": "DamageBindable",
+			"ClassName": "BindableEvent"
+		},
+		{
+			"Name": "DamageRemote",
+			"ClassName": "RemoteEvent"
+		},
+		{
+			"Name": "BurnPieRemote",
+			"ClassName": "RemoteEvent"
+		}
+	]
+}

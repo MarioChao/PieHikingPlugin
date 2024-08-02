@@ -2,6 +2,7 @@
 -- Pie Hiking Plugin
 
 ---------- Validate environment ----------
+-- Validate the script's environment before running any code
 
 local RunService = game:GetService("RunService")
 

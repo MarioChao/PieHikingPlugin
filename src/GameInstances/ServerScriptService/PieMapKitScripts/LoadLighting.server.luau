@@ -11,7 +11,7 @@ end
 
 ---------- Services----------
 
-local ReplicatedStorage = script.Parent.Parent.Parent.ReplicatedStorage or game:GetService("ReplicatedStorage")
+local ReplicatedStorage = script.Parent.Parent.Parent:FindFirstChild("ReplicatedStorage") or game:GetService("ReplicatedStorage")
 
 ---------- Imports ----------
 
@@ -19,19 +19,38 @@ local LightingModules = ReplicatedStorage:FindFirstChild("LightingModules")
 local LightingTypes = require(LightingModules.Types)
 local UpdateLighting = require(LightingModules.UpdateLighting)
 
----------- Instances ----------
+---------- Instnaces ----------
 
-local DefaultDreamValue: ObjectValue = workspace:FindFirstChild("DefaultDreamValue", true)
-local DefaultDream = DefaultDreamValue.Value
-local DefaultLightingConfig: LightingTypes.LightingConfigType = require(DefaultDream:FindFirstChild("LightingConfig"))
+local PieMapKitEvents = ReplicatedStorage:FindFirstChild("PieMapKitEvents")
+local LightingBindable = PieMapKitEvents.LightingBindable
 
 ---------- Local functions ----------
 
-local function loadDefaultLighting()
-	print(`Loading {DefaultDream.Name}'s lighting configurations`)
-	UpdateLighting.applyLightingConfig(DefaultLightingConfig)
+local function loadLighting(lightingConfig: LightingTypes.LightingConfigType, name: string)
+	print(`Loading {name}'s lighting configurations`)
+	UpdateLighting.applyLightingConfig(lightingConfig)
+end
+
+local function loadDreamLighting(dreamFolder: Instance)
+	-- Validate config
+	local configModule = dreamFolder:FindFirstChild("LightingConfig")
+	if not configModule then
+		return
+	end
+
+	-- Load lighting
+	local lightingConfig: LightingTypes.LightingConfigType = require(configModule)
+	loadLighting(lightingConfig)
+end
+
+---------- Event functions ----------
+
+local function onLightingBindableEvent(action: string, ...)
+	if action == "LoadLighting" then
+		loadDreamLighting(...)
+	end
 end
 
 ---------- Calling / connecting functions ----------
 
-loadDefaultLighting()
+LightingBindable.Event:Connect(onLightingBindableEvent)
