@@ -129,33 +129,6 @@ local function validateObject(object: Instance)
 	return object:IsA("BasePart")
 end
 
----------- Module functions ----------
-
-function Module.addInstance(object: Instance)
-	-- Validate object
-	if not validateObject(object) then
-		return
-	end
-
-	-- Validate unique
-	if taggedConnections[object] then
-		return
-	end
-
-	-- Set up object
-	setUpObject(object)
-end
-
-function Module.removeInstance(object: Instance)
-	-- Validate object
-	if not validateObject(object) then
-		return
-	end
-
-	-- Clean up object
-	cleanUpObject(object)
-end
-
 ---------- Event functions ----------
 
 local function onCharacterAdded(character: Model, player: Player)
@@ -197,6 +170,33 @@ local function allPlayerEvents()
 	end)
 	Players.PlayerAdded:Connect(onPlayerAdded)
 	Players.PlayerRemoving:Connect(onPlayerRemoving)
+end
+
+---------- Module functions ----------
+
+function Module.addInstance(object: Instance)
+	-- Validate object
+	if not validateObject(object) then
+		return
+	end
+
+	-- Validate unique
+	if taggedConnections[object] then
+		return
+	end
+
+	-- Set up object
+	setUpObject(object)
+end
+
+function Module.removeInstance(object: Instance)
+	-- Validate object
+	if not validateObject(object) then
+		return
+	end
+
+	-- Clean up object
+	cleanUpObject(object)
 end
 
 ---------- Set up function ----------

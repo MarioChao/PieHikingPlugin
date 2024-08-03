@@ -40,7 +40,7 @@ local function loadDreamLighting(dreamFolder: Instance)
 
 	-- Load lighting
 	local lightingConfig: LightingTypes.LightingConfigType = require(configModule)
-	loadLighting(lightingConfig)
+	loadLighting(lightingConfig, dreamFolder.Name)
 end
 
 ---------- Event functions ----------

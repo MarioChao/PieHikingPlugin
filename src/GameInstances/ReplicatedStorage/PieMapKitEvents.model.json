@@ -2,6 +2,10 @@
 	"ClassName": "Folder",
 	"Children": [
 		{
+			"Name": "LoadDreamBindable",
+			"ClassName": "BindableEvent"
+		},
+		{
 			"Name": "LoadDreamRemote",
 			"ClassName": "RemoteEvent"
 		},

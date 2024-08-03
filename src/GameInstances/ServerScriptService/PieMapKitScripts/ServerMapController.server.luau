@@ -11,7 +11,6 @@ end
 
 ---------- Services ----------
 
-local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = script.Parent.Parent.Parent:FindFirstChild("ReplicatedStorage") or game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
@@ -19,6 +18,7 @@ local ServerStorage = game:GetService("ServerStorage")
 ---------- Imports ----------
 
 local PieMapKitModules = ReplicatedStorage:WaitForChild("PieMapKitModules")
+local DreamMaps = require(PieMapKitModules.DreamMaps)
 require(PieMapKitModules.MapObjects)
 
 ---------- Types ----------
@@ -26,18 +26,19 @@ require(PieMapKitModules.MapObjects)
 ---------- Instances ----------
 
 local PieMapKitEvents = ReplicatedStorage:WaitForChild("PieMapKitEvents")
+local LoadDreamBindable = PieMapKitEvents.LoadDreamBindable
 local LoadDreamRemote = PieMapKitEvents.LoadDreamRemote
 local LightingBindable = PieMapKitEvents.LightingBindable
 
-local DefaultDreamValue: ObjectValue = workspace:FindFirstChild("DefaultDreamValue", true)
+local DefaultDreamValue: ObjectValue = workspace:FindFirstChild("_DefaultDreamValue", true)
 local DefaultDream = DefaultDreamValue.Value
 
+local DreamStorage = ServerStorage:FindFirstChild("DreamStorage") or Instance.new("Folder")
+DreamStorage.Name = "DreamStorage"
 
 ---------- Variables ----------
 
 local mapTagName = "HikeMap"
-
-local storedDreamFolders: {Instance} = {}
 
 local savedMapFolder: {[Instance]: Folder} = {}
 
@@ -85,7 +86,7 @@ local function unloadDream(dreamFolder: Instance)
 	activeClientDreamMapFolder[dreamFolder] = nil
 
 	-- Move the dream to storage
-	dreamFolder.Parent = ServerStorage
+	dreamFolder.Parent = DreamStorage
 
 	-- Move map if saved
 	if savedMapFolder[dreamFolder] then
@@ -96,24 +97,6 @@ end
 
 ---------- Event functions ----------
 -- Functions that are directly connected by events or signals
-
-local function onMapAdded(map: Folder)
-	-- Validate dream
-	local dreamFolder = map.Parent
-	if not (dreamFolder and dreamFolder:GetAttribute("DreamDifficulty")) then
-		return
-	end
-
-	-- Save dream
-	table.insert(storedDreamFolders, dreamFolder)
-
-	-- Load or unload dream
-	if dreamFolder == DefaultDream then
-		loadDream(dreamFolder)
-	else
-		unloadDream(dreamFolder)
-	end
-end
 
 local function onPlayerAdded(player: Player)
 	for dreamFolder, mapFolder in activeClientDreamMapFolder do
@@ -137,17 +120,38 @@ local function allPlayerEvents()
 	Players.PlayerAdded:Connect(onPlayerAdded)
 end
 
+local function onDreamAddedEvent(dreamFolder: Folder)
+	-- Validate dream
+	if not (dreamFolder and dreamFolder:GetAttribute("DreamDifficulty")) then
+		return
+	end
+
+	-- Load or unload dream
+	if dreamFolder == DefaultDream then
+		loadDream(dreamFolder)
+	else
+		unloadDream(dreamFolder)
+	end
+end
+
+local function onLoadDreamBindableEvent(action: string, ...)
+	if action == "LoadDream" then
+		loadDream(...)
+	elseif action == "UnloadDream" then
+		unloadDream(...)
+	end
+end
+
 ---------- Set up function ----------
 local function initSetUp()
-	-- Tags
-	local tagged = CollectionService:GetTagged(mapTagName)
+	-- Dream maps
+	local dreams = DreamMaps.getAllDreams()
 	task.defer(function()
-		for _, object in tagged do
-			onMapAdded(object)
+		for _, dreamFolder in dreams do
+			onDreamAddedEvent(dreamFolder)
 		end
 	end)
-	CollectionService:GetInstanceAddedSignal(mapTagName):Connect(onMapAdded)
-	CollectionService:GetInstanceRemovedSignal(mapTagName):Connect(onMapAdded)
+	DreamMaps.dreamAdded.Event:Connect(onDreamAddedEvent)
 
 	-- Players
 	allPlayerEvents()
@@ -156,4 +160,5 @@ end
 ---------- Calling / connecting functions ----------
 -- Connect functions to events and signals, then call set up functions
 
+LoadDreamBindable.Event:Connect(onLoadDreamBindableEvent)
 initSetUp()
