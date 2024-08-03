@@ -77,8 +77,6 @@ local function setUpMapKitContainers(): {Instance}
 end
 
 local function setUpMapKitProperties()
-	workspace.StreamingEnabled = false
-	print("Disabled StreamingEnabled")
 	warn("If you haven't, please enable TouchesUseCollisionGroups in Workspace!")
 end
 
