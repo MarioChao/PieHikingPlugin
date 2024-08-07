@@ -148,7 +148,9 @@ local function onCharacterAdded(character: Model, player: Player)
 	task.wait(0.1)
 
 	-- Move player to checkpoint
-	humanoidRootPart:PivotTo(checkpointPart.CFrame)
+	local checkpointCFrame = checkpointPart.CFrame
+	checkpointCFrame += Vector3.new(0, checkpointPart.Size.Y / 2, 0)
+	humanoidRootPart:PivotTo(checkpointCFrame)
 end
 
 local function onPlayerAdded(player: Player)
