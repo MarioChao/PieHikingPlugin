@@ -20,49 +20,6 @@ local taggedConnections: {[BasePart]: {RBXScriptConnection}} = {}
 
 local playerCheckpoint: {[Player]: BasePart} = {}
 
----------- Helper functions ----------
-
--- Get the part's parent, checking if it is a character model with a `Humanoid`
-local function getAndValidateCharacterFromPart(part: BasePart): Model?
-	-- Validate part
-	if not part:IsA("BasePart") then
-		return nil
-	end
-
-	-- Validate character
-	local character = part.Parent
-	if not (character and character:IsA("Model")) then
-		return nil
-	end
-
-	-- Validate humanoid
-	local humanoid = character:FindFirstChildWhichIsA("Humanoid")
-	if not humanoid then
-		return nil
-	end
-
-	-- Return
-	return character
-end
-
--- Get the `Player` object from a character model
-local function getPlayer(character: Model?): Player?
-	local player: Player?
-	player = character and Players:GetPlayerFromCharacter(character)
-	return player
-end
-
-local function isCharacterAlive(character: Model): boolean
-	-- Validate humanoid
-	local humanoid = character:FindFirstChildWhichIsA("Humanoid")
-	if not humanoid then
-		return false
-	end
-
-	-- Return positive health
-	return humanoid.Health > 0
-end
-
 ---------- Local functions ----------
 -- Define general functions here
 
@@ -74,14 +31,15 @@ end
 
 local function onCheckpointTouched(checkpointPart: BasePart, otherPart: BasePart)
 	-- Validate player
-	local character = getAndValidateCharacterFromPart(otherPart)
-	local player = getPlayer(character)
+	local character = otherPart.Parent
+	local player = Players:GetPlayerFromCharacter(character)
 	if not (character and player) then
 		return
 	end
 
-	-- Validate alive
-	if not isCharacterAlive(character) then
+	-- Validate humanoid alive
+	local humanoid = character:FindFirstChildOfClass("Humanoid") :: Humanoid
+	if not (humanoid.Health > 0) then
 		return
 	end
 
