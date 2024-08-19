@@ -7,7 +7,7 @@ local Module = {}
 ---------- Services ----------
 
 local Debris = game:GetService("Debris")
-local ReplicatedStorage = script.Parent.Parent.Parent or game:GetService("RunService")
+local ReplicatedStorage = script.Parent.Parent.Parent or game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 ---------- Types ----------

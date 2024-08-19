@@ -15,7 +15,7 @@ local StarterPlayer = game:GetService("StarterPlayer")
 
 local PluginFolder = script.Parent.Parent.Parent
 
-local GameInstances = PluginFolder.GameInstances
+local KitGameInstances = PluginFolder.KitGameInstances
 local PieHikingMapKit: Folder
 
 ---------- Local functions ----------
@@ -51,21 +51,21 @@ end
 local function setUpMapKitContainers(): {Instance}
 	local addedInstances = {}
 
-	for _, object in GameInstances.ReplicatedStorage:GetChildren() do
+	for _, object in KitGameInstances.ReplicatedStorage:GetChildren() do
 		removeDupes(ReplicatedStorage, object.Name)
 		local newObject = object:Clone()
 		enableDescendantScripts(newObject)
 		newObject.Parent = ReplicatedStorage
 		table.insert(addedInstances, newObject)
 	end
-	for _, object in GameInstances.ServerScriptService:GetChildren() do
+	for _, object in KitGameInstances.ServerScriptService:GetChildren() do
 		removeDupes(ServerScriptService, object.Name)
 		local newObject = object:Clone()
 		enableDescendantScripts(newObject)
 		newObject.Parent = ServerScriptService
 		table.insert(addedInstances, newObject)
 	end
-	for _, object in GameInstances.StarterPlayerScripts:GetChildren() do
+	for _, object in KitGameInstances.StarterPlayerScripts:GetChildren() do
 		removeDupes(StarterPlayer.StarterPlayerScripts, object.Name)
 		local newObject = object:Clone()
 		enableDescendantScripts(newObject)

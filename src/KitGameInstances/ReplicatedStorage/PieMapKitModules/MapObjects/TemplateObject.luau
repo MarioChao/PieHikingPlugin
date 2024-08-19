@@ -6,7 +6,7 @@ local Module = {}
 
 ---------- Services ----------
 
-local ReplicatedStorage = script.Parent.Parent.Parent or game:GetService("RunService")
+local ReplicatedStorage = script.Parent.Parent.Parent or game:GetService("ReplicatedStorage")
 
 ---------- Types ----------
 
@@ -15,6 +15,7 @@ local ReplicatedStorage = script.Parent.Parent.Parent or game:GetService("RunSer
 ---------- Variables ----------
 
 local taggedConnections: {[BasePart]: {RBXScriptConnection}} = {}
+local taggedPartConnections: {[Instance]: {[BasePart]: {RBXScriptConnection}}} = {}
 
 ---------- Helper functions ----------
 
@@ -38,6 +39,19 @@ local function cleanUpObject(part: BasePart)
 			connection:Disconnect()
 		end
 		taggedConnections[part] = nil
+	end
+end
+
+local function cleanUpObject2(folder: Folder)
+	-- Disconnect and remove stored connections
+	if taggedPartConnections[folder] then
+		for part, partConnections in taggedPartConnections[folder] do
+			for _, connection in partConnections do
+				connection:Disconnect()
+			end
+			partConnections[part] = nil
+		end
+		taggedPartConnections[folder] = nil
 	end
 end
 
