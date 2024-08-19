@@ -1,0 +1,21 @@
+{
+	"ClassName": "Folder",
+	"Children": [
+		{
+			"Name": "DreamItemBindable",
+			"ClassName": "BindableEvent"
+		},
+		{
+			"Name": "DreamTeleportBindable",
+			"ClassName": "BindableEvent"
+		},
+		{
+			"Name": "DreamTeleportRemote",
+			"ClassName": "RemoteEvent"
+		},
+		{
+			"Name": "DreamVoteRemote",
+			"ClassName": "RemoteEvent"
+		}
+	]
+}

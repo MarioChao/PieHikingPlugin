@@ -2,7 +2,6 @@
 -- Dream Maps Module
 
 ---------- Module ----------
-
 local DreamMaps = {}
 
 ---------- Services ----------
