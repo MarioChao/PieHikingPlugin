@@ -1,9 +1,0 @@
-{
-	"ClassName": "AlignPosition",
-	"Properties": {
-		"Mode": "OneAttachment",
-		"ForceLimitMode": "PerAxis",
-		"MaxAxesForce": [7500, 20000, 7500],
-		"Responsiveness": 25
-	}
-}
