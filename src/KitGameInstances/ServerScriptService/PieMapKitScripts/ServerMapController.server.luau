@@ -77,7 +77,7 @@ local function loadDream(dreamFolder: Instance)
 	end
 
 	-- Load lighting
-	LightingBindable:Fire("LoadLighting", dreamFolder)
+	LightingBindable:Fire("LoadDreamLighting", dreamFolder)
 end
 
 local function unloadDream(dreamFolder: Instance)

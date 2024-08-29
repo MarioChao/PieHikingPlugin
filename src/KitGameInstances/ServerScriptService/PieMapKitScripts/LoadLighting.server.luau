@@ -19,7 +19,7 @@ local LightingModules = ReplicatedStorage:FindFirstChild("LightingModules")
 local LightingTypes = require(LightingModules.Types)
 local UpdateLighting = require(LightingModules.UpdateLighting)
 
----------- Instnaces ----------
+---------- Instances ----------
 
 local PieMapKitEvents = ReplicatedStorage:FindFirstChild("PieMapKitEvents")
 local LightingBindable = PieMapKitEvents.LightingBindable
@@ -46,7 +46,7 @@ end
 ---------- Event functions ----------
 
 local function onLightingBindableEvent(action: string, ...)
-	if action == "LoadLighting" then
+	if action == "LoadDreamLighting" then
 		loadDreamLighting(...)
 	end
 end
