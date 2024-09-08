@@ -9,7 +9,6 @@ local Module = {}
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Selection = game:GetService("Selection")
 local ServerScriptService = game:GetService("ServerScriptService")
-local StarterGui = game:GetService("StarterGui")
 local StarterPack = game:GetService("StarterPack")
 local StarterPlayer = game:GetService("StarterPlayer")
 
@@ -57,12 +56,6 @@ local function setUpPieToolContainers(): {Instance}
 		removeDupes(StarterPlayer.StarterPlayerScripts, object.Name)
 		local newObject = object:Clone()
 		newObject.Parent = StarterPlayer.StarterPlayerScripts
-		table.insert(addedInstances, newObject)
-	end
-	for _, object in HeartPie["ContainerScripts (see ReadMe)"].StarterGui:GetChildren() do
-		removeDupes(StarterGui, object.Name)
-		local newObject = object:Clone()
-		newObject.Parent = StarterGui
 		table.insert(addedInstances, newObject)
 	end
 
