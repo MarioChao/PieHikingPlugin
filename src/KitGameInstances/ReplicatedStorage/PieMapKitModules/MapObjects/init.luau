@@ -13,6 +13,7 @@ local CollectionService = game:GetService("CollectionService")
 local BurnBricks = require(script.BurnBricks)
 local DamageBricks = require(script.DamageBricks)
 local HikeCheckpoints = require(script.HikeCheckpoints)
+local PositionTeleporters = require(script.PositionTeleporters)
 
 ---------- Types ----------
 
@@ -27,6 +28,7 @@ local objectTagNames: {[string]: ObjectModule} = {
 	["BurnBrick"] = BurnBricks,
 	["DamageBrick"] = DamageBricks,
 	["HikeCheckpoint"] = HikeCheckpoints,
+	["PositionTeleporter"] = PositionTeleporters,
 }
 
 ---------- Event functions ----------
