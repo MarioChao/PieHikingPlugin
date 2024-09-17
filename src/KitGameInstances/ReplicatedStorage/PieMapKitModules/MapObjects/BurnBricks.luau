@@ -59,10 +59,12 @@ local function burnPieAction(pie: Model, burnColor: Color3)
 	local fire = Instance.new("Fire")
 	fire.Parent = mainPart
 
-	-- Color parts
+	-- Color parts & meshes
 	for _, object in pie:GetDescendants() do
 		if object:IsA("BasePart") then
 			object.Color = burnColor
+		elseif object:IsA("DataModelMesh") then
+			object.VertexColor = Vector3.new(burnColor.R, burnColor.G, burnColor.B)
 		end
 	end
 end

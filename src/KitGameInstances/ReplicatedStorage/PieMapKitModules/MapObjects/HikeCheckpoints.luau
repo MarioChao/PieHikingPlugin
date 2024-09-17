@@ -38,8 +38,8 @@ local function onCheckpointTouched(checkpointPart: BasePart, otherPart: BasePart
 	end
 
 	-- Validate humanoid alive
-	local humanoid = character:FindFirstChildOfClass("Humanoid") :: Humanoid
-	if not (humanoid.Health > 0) then
+	local humanoid = character:FindFirstChildWhichIsA("Humanoid") :: Humanoid
+	if not (humanoid and humanoid.Health > 0) then
 		return
 	end
 
@@ -109,6 +109,7 @@ local function onCharacterAdded(character: Model, player: Player)
 	local checkpointCFrame = checkpointPart.CFrame
 	checkpointCFrame += Vector3.new(0, checkpointPart.Size.Y / 2, 0)
 	humanoidRootPart:PivotTo(checkpointCFrame)
+	-- character:PivotTo(checkpointCFrame)
 end
 
 local function onPlayerAdded(player: Player)

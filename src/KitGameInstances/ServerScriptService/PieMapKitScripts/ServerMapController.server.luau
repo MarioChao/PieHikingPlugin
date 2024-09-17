@@ -35,6 +35,7 @@ local DefaultDream = DefaultDreamValue.Value
 
 local DreamStorage = ServerStorage:FindFirstChild("DreamStorage") or Instance.new("Folder")
 DreamStorage.Name = "DreamStorage"
+DreamStorage.Parent = ServerStorage
 
 ---------- Variables ----------
 

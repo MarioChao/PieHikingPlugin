@@ -26,6 +26,11 @@ local characterThrottle: {[Player]: boolean} = {}
 ---------- Local functions ----------
 
 local function onDamagePlayer(player: Player, amount: number)
+	-- Validate positive
+	if amount < 0 then
+		return
+	end
+
 	-- Validate humanoid
 	local character = player.Character
 	local humanoid = character and character:FindFirstChildWhichIsA("Humanoid")

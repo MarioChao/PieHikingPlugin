@@ -1,5 +1,6 @@
 --!strict
 -- Template Object Module
+-- For directly tagged parts
 
 ---------- Module ----------
 local Module = {}
@@ -15,7 +16,6 @@ local ReplicatedStorage = script.Parent.Parent.Parent or game:GetService("Replic
 ---------- Variables ----------
 
 local taggedConnections: {[BasePart]: {RBXScriptConnection}} = {}
-local taggedPartConnections: {[Instance]: {[BasePart]: {RBXScriptConnection}}} = {}
 
 ---------- Helper functions ----------
 
@@ -39,19 +39,6 @@ local function cleanUpObject(part: BasePart)
 			connection:Disconnect()
 		end
 		taggedConnections[part] = nil
-	end
-end
-
-local function cleanUpObject2(folder: Folder)
-	-- Disconnect and remove stored connections
-	if taggedPartConnections[folder] then
-		for part, partConnections in taggedPartConnections[folder] do
-			for _, connection in partConnections do
-				connection:Disconnect()
-			end
-			partConnections[part] = nil
-		end
-		taggedPartConnections[folder] = nil
 	end
 end
 
