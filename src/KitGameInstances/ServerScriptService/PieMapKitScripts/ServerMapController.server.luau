@@ -68,13 +68,13 @@ local function loadDream(dreamFolder: Instance)
 	dreamFolder.Parent = workspace
 
 	if dreamFolder:GetAttribute("IsClientMap") then
+		-- Move map to replicated storage
+		savedMapFolder[dreamFolder] = mapFolder
+		mapFolder.Parent = ReplicatedStorage
+
 		-- Load dream on client
 		LoadDreamRemote:FireAllClients("LoadClientDream", dreamFolder, mapFolder)
 		activeClientDreamMapFolder[dreamFolder] = mapFolder
-
-		-- Remove map from server
-		savedMapFolder[dreamFolder] = mapFolder
-		mapFolder.Parent = ReplicatedStorage
 	end
 
 	-- Load lighting
@@ -107,7 +107,7 @@ local function onPlayerAdded(player: Player)
 		end
 
 		-- Load dream on client
-		LoadDreamRemote:FireAllClients("LoadClientDream", dreamFolder, mapFolder)
+		LoadDreamRemote:FireClient(player, "LoadClientDream", dreamFolder, mapFolder)
 	end
 end
 
